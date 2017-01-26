@@ -23,6 +23,10 @@ module WebSocket
             ctx = OpenSSL::SSL::SSLContext.new
             ctx.ssl_version = options[:ssl_version] || 'SSLv23'
             ctx.verify_mode = options[:verify_mode] || OpenSSL::SSL::VERIFY_NONE #use VERIFY_PEER for verification
+
+            ctx.cert = OpenSSL::X509::Certificate.new(File.read(options[:client_cert_file])) if options[:client_cert_file]
+            ctx.key = OpenSSL::PKey::RSA.new(File.read(options[:client_cert_file])) if options[:client_cert_file]
+
             cert_store = OpenSSL::X509::Store.new
             cert_store.set_default_paths
             ctx.cert_store = cert_store
